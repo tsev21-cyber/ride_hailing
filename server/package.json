@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "cd ../packages/shared && npm run build",
     "build": "tsc -p tsconfig.json",
     "prestart": "npm run build",
     "start": "node dist/main.js",
