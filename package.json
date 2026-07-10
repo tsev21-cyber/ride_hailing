@@ -1,0 +1,22 @@
+{
+  "name": "tylo-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tylo — premium ride-hailing platform. Real-time dispatch, Stripe Connect payouts, driver verification.",
+  "workspaces": [
+    "packages/shared",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c magenta,cyan \"npm run dev:server\" \"npm run dev:web\"",
+    "dev:server": "npm --workspace @tylo/server run dev",
+    "dev:web": "npm --workspace @tylo/web run dev",
+    "build": "npm --workspace @tylo/shared run build && npm --workspace @tylo/server run build && npm --workspace @tylo/web run build",
+    "start": "npm --workspace @tylo/server run start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  }
+}
