@@ -1,0 +1,15 @@
+# One-click deploy on Render (persistent Node process — unlike serverless, this
+# keeps the WebSocket connections and the simulation loop alive).
+# In the Render dashboard: New + → Blueprint → point at this repo.
+services:
+  - type: web
+    name: tylo
+    runtime: node
+    plan: free
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    startCommand: node server/dist/main.js
+    healthCheckPath: /api/state
+    envVars:
+      - key: NODE_ENV
+        value: production

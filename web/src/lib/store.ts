@@ -97,7 +97,16 @@ function logFrame(dir: WireFrame['dir'], event: string, payload: unknown, level?
 
 /* ---------------------------------------------------------------- socket */
 
-export const socket: Socket = io({ path: '/socket.io', autoConnect: true, transports: ['websocket', 'polling'] });
+// Same-origin by default (the server serves this bundle in production, and Vite
+// proxies in dev). Set VITE_API_URL at build time only for a split deployment
+// where the web app and the server live on different hosts.
+const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+
+export const socket: Socket = io(API_BASE || undefined, {
+  path: '/socket.io',
+  autoConnect: true,
+  transports: ['websocket', 'polling'],
+});
 
 socket.on('connect', () => {
   useStore.setState({ connected: true });
@@ -217,7 +226,7 @@ socket.on('notify', (n: Notification) => {
 
 export async function api<T = unknown>(path: string, body?: unknown, method = 'POST'): Promise<T> {
   logFrame('up', `${method} /api/${path}`, body ?? {});
-  const res = await fetch(`/api/${path}`, {
+  const res = await fetch(`${API_BASE}/api/${path}`, {
     method,
     headers: { 'content-type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
